@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:replace="~{fragments :: head('Não encontrado')}"></head>
+<body>
+<header th:replace="~{fragments :: menu('')}"></header>
+<main class="conteudo estreito">
+    <h1>Não encontrado</h1>
+    <p class="alerta erro" th:text="${mensagem}">Registro não encontrado.</p>
+    <a class="botao" th:href="@{/}">Voltar ao painel</a>
+</main>
+<footer th:replace="~{fragments :: rodape}"></footer>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:replace="~{fragments :: head('Painel')}"></head>
+<body>
+<header th:replace="~{fragments :: menu('painel')}"></header>
+<main class="conteudo">
+    <h1>Painel</h1>
+    <div th:replace="~{fragments :: alertas}"></div>
+    <section class="cartoes">
+        <article class="cartao">
+            <span class="rotulo">Clientes</span>
+            <strong th:text="${resumo.totalClientes}">0</strong>
+            <a th:href="@{/clientes}">Ver clientes</a>
+        </article>
+        <article class="cartao">
+            <span class="rotulo">Transações</span>
+            <strong th:text="${resumo.totalTransacoes}">0</strong>
+            <a th:href="@{/transacoes}">Ver transações</a>
+        </article>
+        <article class="cartao destaque">
+            <span class="rotulo">Saldo geral</span>
+            <strong th:text="'R$ ' + ${#numbers.formatDecimal(resumo.saldoGeral, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</strong>
+            <span class="nota">Soma dos créditos menos a soma dos débitos</span>
+        </article>
+    </section>
+</main>
+<footer th:replace="~{fragments :: rodape}"></footer>
+</body>
+</html>

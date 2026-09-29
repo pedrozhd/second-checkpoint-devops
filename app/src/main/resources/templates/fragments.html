@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' · DimDim'">DimDim</title>
+    <link rel="stylesheet" th:href="@{/css/dimdim.css}">
+</head>
+<body>
+
+<header th:fragment="menu(ativo)" class="topo">
+    <a class="marca" th:href="@{/}"><span class="marca-selo">dim<br>dim</span> DimDim</a>
+    <nav>
+        <a th:href="@{/}" th:classappend="${ativo == 'painel'} ? 'ativo'">Painel</a>
+        <a th:href="@{/clientes}" th:classappend="${ativo == 'clientes'} ? 'ativo'">Clientes</a>
+        <a th:href="@{/transacoes}" th:classappend="${ativo == 'transacoes'} ? 'ativo'">Transações</a>
+    </nav>
+</header>
+
+<div th:fragment="alertas">
+    <p class="alerta sucesso" th:if="${sucesso}" th:text="${sucesso}"></p>
+    <p class="alerta erro" th:if="${erro}" th:text="${erro}"></p>
+</div>
+
+<footer th:fragment="rodape" class="rodape">
+    Projeto DimDim · Grupo lupeol · FIAP DevOps Tools &amp; Cloud Computing · 2º Checkpoint
+</footer>
+
+</body>
+</html>
