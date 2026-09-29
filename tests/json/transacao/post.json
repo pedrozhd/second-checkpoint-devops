@@ -1,0 +1,11 @@
+{
+  "_metodo": "POST",
+  "_url": "https://rm561940-webapp-dimdim.azurewebsites.net/api/transacoes",
+  "_descricao": "Cria uma transação vinculada a um cliente existente. Retorna 201 Created com o cabeçalho Location.",
+  "_resposta_esperada": "201 Created (404 se o idCliente não existir, 400 se valor <= 0 ou tipo inválido)",
+  "_observacao": "tipo aceita apenas CREDITO ou DEBITO (CHECK constraint no banco). O campo dataTransacao é preenchido pelo banco e não deve ser enviado.",
+  "idCliente": 3,
+  "descricao": "Transferência recebida",
+  "valor": 890.25,
+  "tipo": "CREDITO"
+}

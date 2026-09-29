@@ -1,0 +1,7 @@
+{
+  "_metodo": "DELETE",
+  "_url": "https://rm561940-webapp-dimdim.azurewebsites.net/api/transacoes/4",
+  "_descricao": "Remove uma transação. DELETE não possui corpo de requisição.",
+  "_resposta_esperada": "204 No Content (404 se o id não existir)",
+  "_corpo_requisicao": null
+}
