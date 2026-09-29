@@ -15,6 +15,13 @@
 #   APPLICATIONINSIGHTS_CONNECTION_STRING + ApplicationInsightsAgent_EXTENSION_VERSION=~3
 #   fazem o App Service injetar o agente Java 3.x do Application Insights.
 #
+# Fuso horario:
+#   JAVA_OPTS=-Duser.timezone=America/Sao_Paulo. O App Service roda em UTC e a
+#   imagem Java nao traz tzdata (a variavel TZ e ignorada); a JVM usa a base de
+#   fusos propria. Sem isto, o timestamp dos
+#   erros da API e os logs sairiam 3 horas a frente do horario de Brasilia
+#   (as datas gravadas ja vem do DEFAULT do banco, ver scripts/DDL.sql).
+#
 # As app settings vao por arquivo JSON (--settings @arquivo): os valores tem
 # ';', '~' e parenteses, que se perdem na passagem Git Bash -> az.cmd.
 # O arquivo nao contem senha e e apagado ao final.
@@ -99,7 +106,8 @@ cat > "${ARQUIVO_SETTINGS}" <<EOF
   { "name": "SPRING_DATASOURCE_USERNAME",                 "value": "${SQL_APP_USER}",         "slotSetting": false },
   { "name": "SPRING_DATASOURCE_PASSWORD",                 "value": "${KV_REFERENCE}",         "slotSetting": false },
   { "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",      "value": "${AI_CONNECTION_STRING}", "slotSetting": false },
-  { "name": "ApplicationInsightsAgent_EXTENSION_VERSION", "value": "~3",                      "slotSetting": false }
+  { "name": "ApplicationInsightsAgent_EXTENSION_VERSION", "value": "~3",                      "slotSetting": false },
+  { "name": "JAVA_OPTS",                                  "value": "-Duser.timezone=America/Sao_Paulo", "slotSetting": false }
 ]
 EOF
 
@@ -109,7 +117,7 @@ az webapp config appsettings set \
     --settings "@${DIR_SCRIPTS}/.appsettings.tmp.json" \
     --output none
 unset AI_CONNECTION_STRING
-echo "  5 app settings ............... gravadas"
+echo "  6 app settings ............... gravadas"
 
 titulo "CONFIGURACAO DO SITE"
 az webapp config set \

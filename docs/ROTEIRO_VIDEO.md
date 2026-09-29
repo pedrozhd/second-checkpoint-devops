@@ -90,8 +90,20 @@ Colar o [`EVIDENCIAS_VIDEO.sql`](EVIDENCIAS_VIDEO.sql) e seguir bloco a bloco:
 | cliente | Delete | Excluir Joana | consulta vazia |
 
 Depois, **uma vez pela API** (curl no terminal), POST e DELETE de cliente,
-com o SELECT correspondente. Opcional: `./scripts/08_smoke-tests.sh` para
-mostrar as 17 verificações contra a URL pública.
+com o SELECT correspondente (bloco "API REST" do `EVIDENCIAS_VIDEO.sql`).
+
+**Obrigatório antes da seção 5:** gerar as falhas que o Application Insights
+vai mostrar. A exclusão bloqueada pela tela devolve um redirect (302), não um
+409; o 409 e o 404 só aparecem pela API:
+
+```bash
+URL=https://rm561940-webapp-dimdim.azurewebsites.net
+curl -i -X DELETE $URL/api/clientes/1        # 409: Ana Souza (seed) tem transação
+curl -i $URL/api/clientes/999999             # 404: cliente inexistente
+```
+
+Opcional: `./scripts/08_smoke-tests.sh` para mostrar as 17 verificações
+contra a URL pública.
 
 ## 5. Monitoramento do App e do Banco (≈ 4 min)
 
@@ -102,7 +114,7 @@ Aguarde 2–3 minutos depois do CRUD (latência de ingestão). Em
 2. **Application Map**: a seta Web App → `sql-dimdim-rm561940` com contagem de chamadas.
 3. **Transaction search**: abrir um `POST /transacoes` e mostrar a
    dependência SQL com o `INSERT` e a duração.
-4. **Failures**: o 409 da exclusão bloqueada (via API) e o 404.
+4. **Failures**: o 409 e o 404 gerados pelos dois `curl` obrigatórios do fim da seção 4.
 5. **Performance**: tempo médio de resposta por operação.
 
 Em `db_dimdim` → **Metrics**: DTU percentage e *Successful connections* no

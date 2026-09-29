@@ -194,19 +194,22 @@ O `03` leva de 3 a 5 minutos (criação do servidor SQL). O `06` leva de 1 a 2 m
 ./scripts/07_deploy.sh
 ```
 
-O script executa, na íntegra:
+Em resumo, a partir da raiz do repositório, o script faz:
 
 ```bash
-cd app && ./mvnw -B clean package          # testes + app/target/dimdim.jar
+(cd app && ./mvnw -B clean package)        # testes + app/target/dimdim.jar
 az webapp deploy \
     --resource-group rg-dimdim-webapp-rm561940 \
     --name rm561940-webapp-dimdim \
     --src-path app/target/dimdim.jar \
-    --type jar
+    --type jar \
+    --timeout 600000
 ```
 
-e aguarda a aplicação responder **200** em
-<https://rm561940-webapp-dimdim.azurewebsites.net>.
+e depois consulta a página inicial a cada 10 segundos (até 5 minutos) até ela
+responder **200** em <https://rm561940-webapp-dimdim.azurewebsites.net>. No
+Git Bash do Windows, o script ainda reativa a conversão de caminhos só para o
+`mvnw` (ver *Observações técnicas*).
 
 ### 5. Testar em nuvem
 
@@ -349,7 +352,7 @@ A telemetria leva de 1 a 3 minutos para aparecer.
 | Limitação | Motivo |
 |---|---|
 | Telas e API sem autenticação | O escopo avaliado é o deploy em Web App com banco PaaS e o monitoramento; o enunciado não pede controle de acesso. |
-| Endpoint público do Azure SQL, limitado por firewall | Private Endpoint e VNet Integration exigem planos acima do B1 e não são pedidos. O firewall libera só os serviços Azure e o IP do operador. |
+| Endpoint público do Azure SQL, limitado por firewall | Private Endpoint e VNet Integration não são pedidos e acrescentariam rede virtual, DNS privado e custo que o escopo do checkpoint e a assinatura de estudante não justificam. O firewall libera só os serviços Azure e o IP do operador. |
 | A regra `AllowAzureServices` libera qualquer serviço Azure, não só este Web App | É o caminho suportado no tier B1 sem VNet; o acesso ainda exige usuário e senha. |
 | Dados de cliente fictícios | Nenhuma informação pessoal real é utilizada. |
 
@@ -371,7 +374,10 @@ Vault) e **purga** o cofre, liberando o nome para uma nova execução do How To.
 
 **Horário de Brasília nos DEFAULTs.** O Azure SQL roda em UTC. As colunas de
 data usam `SYSDATETIMEOFFSET() AT TIME ZONE 'E. South America Standard Time'`
-para que a tela e o SELECT mostrem a hora local.
+para que a tela e o SELECT mostrem a hora local. O App Service também roda
+em UTC: o `06` define `JAVA_OPTS=-Duser.timezone=America/Sao_Paulo` para que o
+`timestamp` das respostas de erro da API e os logs usem o mesmo horário (a
+variável `TZ` não funciona ali, porque a imagem Java não traz `tzdata`).
 
 **`use_nationalized_character_data=true`.** Todo texto é `NVARCHAR`. Sem essa
 propriedade, o Hibernate espera `varchar` e o `ddl-auto=validate` recusa subir.
