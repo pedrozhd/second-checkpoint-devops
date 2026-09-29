@@ -26,6 +26,12 @@ exigir_comando az
 exigir_comando sqlcmd
 
 DIR_SQL="$(caminho_nativo "$(dirname "$0")")"
+# O sqlcmd do Windows aceita '/' como prefixo de opcao: em "C:/Users/..." ele
+# para no "C:". Com barra invertida o caminho chega inteiro. Em Linux e macOS
+# o caminho nao comeca com letra de unidade e fica como esta.
+if [[ "${DIR_SQL}" =~ ^[A-Za-z]:/ ]]; then
+    DIR_SQL="${DIR_SQL//\//\\}"
+fi
 
 titulo "04 - SCHEMA DO BANCO"
 echo "Servidor : ${SQL_FQDN}"

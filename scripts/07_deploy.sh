@@ -25,7 +25,10 @@ echo "Web App : ${WEBAPP_NAME}"
 echo "URL     : ${WEBAPP_URL}"
 
 titulo "BUILD (com testes)"
-(cd "${RAIZ}/app" && ./mvnw -B clean package)
+# O mvnw precisa da conversao de caminhos do Git Bash que o 00_variables.sh
+# desliga para o az: sem ela, o java.exe recebe o classpath no formato
+# /c/Users/... e falha com ClassNotFoundException (plexus-classworlds).
+(cd "${RAIZ}/app" && env -u MSYS_NO_PATHCONV -u MSYS2_ARG_CONV_EXCL ./mvnw -B clean package)
 
 JAR="$(caminho_nativo "${RAIZ}/app/target")/dimdim.jar"
 echo ""
