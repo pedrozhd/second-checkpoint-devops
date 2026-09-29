@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:replace="~{fragments :: head('Transações')}"></head>
+<body>
+<header th:replace="~{fragments :: menu('transacoes')}"></header>
+<main class="conteudo">
+    <div class="cabecalho-pagina">
+        <h1>Transações</h1>
+        <a class="botao" th:href="@{/transacoes/nova}">+ Nova transação</a>
+    </div>
+    <div th:replace="~{fragments :: alertas}"></div>
+
+    <p class="vazio" th:if="${#lists.isEmpty(transacoes)}">Nenhuma transação registrada.</p>
+
+    <table class="tabela" th:unless="${#lists.isEmpty(transacoes)}">
+        <thead>
+        <tr><th>ID</th><th>Cliente</th><th>Descrição</th><th>Tipo</th><th class="numero">Valor</th><th>Data</th><th></th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${transacoes}">
+            <td th:text="${t.idTransacao}">1</td>
+            <td th:text="${t.nomeCliente}">Cliente</td>
+            <td th:text="${t.descricao}">Descrição</td>
+            <td>
+                <span class="selo" th:classappend="${t.tipo == 'CREDITO'} ? 'credito' : 'debito'"
+                      th:text="${t.tipo == 'CREDITO'} ? 'Crédito' : 'Débito'">Crédito</span>
+            </td>
+            <td class="numero" th:text="'R$ ' + ${#numbers.formatDecimal(t.valor, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
+            <td th:text="${#temporals.format(t.dataTransacao, 'dd/MM/yyyy HH:mm')}">01/01/2026 00:00</td>
+            <td class="acoes">
+                <a class="botao secundario" th:href="@{/transacoes/{id}/editar(id=${t.idTransacao})}">Editar</a>
+                <form th:action="@{/transacoes/{id}/excluir(id=${t.idTransacao})}" method="post"
+                      onsubmit="return confirm('Excluir esta transação?');">
+                    <button type="submit" class="botao perigo">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<footer th:replace="~{fragments :: rodape}"></footer>
+</body>
+</html>
