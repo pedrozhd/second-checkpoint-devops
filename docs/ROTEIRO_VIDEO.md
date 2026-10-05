@@ -45,7 +45,7 @@ ls    # devem aparecer, entre outros: README.md  app  docs  scripts  tests
 - Mostrar o `README.md` no GitHub: descrição, **desenho da arquitetura**
   (explicar os fluxos 1–6) e a pasta `scripts/` com o DDL e os scripts do CLI.
 
-## 2. Criação dos recursos em nuvem (≈ 8 min, com esperas)
+## 2. Criação dos recursos em nuvem (≈ 12 min, com esperas e o tour pelo Portal)
 
 Rodar e explicar cada script. Pode pausar a gravação durante as esperas
 longas e retomar no resultado.
@@ -60,10 +60,81 @@ cd /c/Users/StartSe/workspace/fiap/cp2_devops   # se ainda nao estiver na raiz
 ./scripts/06_webapp.sh           # destacar a Key Vault reference e o ~3 do agente
 ```
 
-Depois, no Portal: abrir `rg-dimdim-webapp-rm561940` e mostrar os recursos
-criados (Web App, plano, SQL server, banco, Key Vault, App Insights, Log
-Analytics). No Web App → *Environment variables*, mostrar a senha como Key
-Vault reference com o **check verde**.
+### Tour pelo Portal (≈ 4 min)
+
+Siga a ordem em que os scripts criaram os recursos. Para cada recurso: abra
+o nome na lista do grupo, mostre o que está indicado, diga a frase sugerida
+e volte ao grupo pelo caminho no topo da página (*breadcrumb*).
+
+> **Nunca clique em "Mostrar valor" / "Show value"** em nenhuma tela: as
+> senhas e a connection string do App Insights não podem aparecer no vídeo.
+
+**1. Grupo de recursos `rg-dimdim-webapp-rm561940`**
+(busca do topo → *Grupos de recursos*)
+- *Visão geral*: a lista com os 7 recursos, a coluna **Tipo** e a região
+  **Brazil South**.
+- *Marcações*: `disciplina`, `checkpoint` e `grupo=lupeol`, gravadas pelos scripts.
+- Fala: *"Tudo o que o projeto usa está num grupo só, criado pelo CLI. O
+  cleanup apaga o grupo inteiro de uma vez."*
+
+**2. Key Vault `kv-dimdim-web-rm561940`** (criado pelo `02`)
+- *Objetos → Segredos*: só os **nomes** `sql-admin-password` e
+  `sql-app-password`. Não abra os valores.
+- *Configurações → Políticas de acesso*: a identidade do Web App
+  `rm561940-webapp-dimdim` com permissão **Get** em segredos, e nada além disso.
+- Fala: *"As senhas nasceram aqui com `openssl rand`; ninguém digitou e
+  nenhuma está no GitHub. O Web App só pode ler, não alterar."*
+
+**3. Servidor SQL `sql-dimdim-rm561940`** (criado pelo `03`)
+- *Visão geral*: o nome do servidor `sql-dimdim-rm561940.database.windows.net`
+  e o administrador `sqladmin_dimdim`.
+- *Segurança → Rede*: as duas regras de firewall, **AllowAzureServices**
+  (opção "Permitir que serviços e recursos do Azure acessem este servidor")
+  e `operador-AAAAMMDD` com o seu IP; e a **versão mínima do TLS 1.2**.
+- Fala: *"É um banco PaaS, não um container: a Azure cuida de servidor,
+  patch e backup. Só entra quem o firewall libera."*
+
+**4. Banco `db_dimdim`** (criado pelo `03`, schema pelo `04`)
+- *Visão geral*: tipo de preço **Básico**, status **Online**, servidor
+  `sql-dimdim-rm561940`.
+- *Configurações → Computação + armazenamento*: **5 DTUs** e 2 GB.
+- Fala: *"As tabelas `cliente` e `transacao` foram criadas pelo
+  `scripts/DDL.sql`, que é o DDL entregue. A aplicação conecta como
+  `user_dimdim`, que só lê e grava dados; o administrador só aplicou o DDL."*
+
+**5. Log Analytics `log-dimdim-rm561940`** (criado pelo `05`)
+- *Visão geral*: o workspace e a retenção de **30 dias**.
+- Fala: *"É onde os dados de monitoramento ficam guardados."*
+
+**6. Application Insights `appi-dimdim-rm561940`** (criado pelo `05`)
+- *Visão geral*: o campo **Workspace** apontando para `log-dimdim-rm561940`.
+  Não aproxime a connection string.
+- Fala: *"Ainda está vazio, porque a aplicação não foi publicada. Na parte
+  do monitoramento voltamos aqui com os dados."*
+
+**7. Plano `asp-dimdim-rm561940`** (criado pelo `06`)
+- *Visão geral*: tipo de preço **B1 (Básico)**, sistema operacional **Linux**
+  e 1 aplicativo.
+- Fala: *"O B1 é o menor plano com Always On: a aplicação não dorme entre
+  as requisições."*
+
+**8. Web App `rm561940-webapp-dimdim`** (criado pelo `06`), o mais importante
+- *Visão geral*: status **Running**, o domínio padrão
+  `rm561940-webapp-dimdim.azurewebsites.net`, a pilha **Java 21** e o plano B1.
+- *Configurações → Variáveis de ambiente*: as 6 configurações gravadas pelo
+  `06`. Em `SPRING_DATASOURCE_PASSWORD`, a coluna de origem mostra
+  **Referência do Key Vault** com o **check verde**.
+- *Configurações → Identidade*: identidade atribuída pelo sistema com
+  status **Ativado**.
+- *Configurações → Configuração → Configurações gerais*: **Somente HTTPS**
+  ligado, **TLS 1.2**, **FTPS desabilitado** e **Always On** ligado.
+- Fala: *"A senha do banco não está aqui: o Web App guarda só o endereço do
+  segredo, e o App Service busca o valor no cofre com a identidade gerenciada.
+  O Application Insights entra pelas duas variáveis do agente Java, sem mudar
+  o código."*
+
+> Se o check verde ainda não aparecer, a referência é resolvida quando a
+> aplicação sobe. Mostre-o de novo logo depois do deploy, na seção 3.
 
 ## 3. Deploy (≈ 3 min)
 
