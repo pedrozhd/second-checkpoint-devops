@@ -31,7 +31,7 @@ e do Banco. Por isso a gravação começa **com o ambiente vazio**.
 
 ```bash
 cd /c/Users/StartSe/workspace/fiap/cp2_devops
-ls    # deve listar: README.md  app  docs  scripts  tests
+ls    # devem aparecer, entre outros: README.md  app  docs  scripts  tests
 ```
 - [ ] Portal Azure aberto na lista de grupos de recursos
 - [ ] Abas do navegador preparadas (vazias por enquanto): aplicação, Query
