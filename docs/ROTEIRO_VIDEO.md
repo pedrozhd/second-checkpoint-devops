@@ -26,7 +26,13 @@ e do Banco. Por isso a gravação começa **com o ambiente vazio**.
 - [ ] Gravação em **1080p** (mínimo exigido: 720p), microfone testado, **explicação falada**
 - [ ] Fonte do terminal **aumentada** e navegador com zoom de 125%
 - [ ] `az login` feito e `az account show` conferido **fora da gravação**
-- [ ] Terminal (Git Bash) aberto **na raiz do repositório clonado**
+- [ ] Terminal (Git Bash) aberto **na raiz do repositório**. O Git Bash abre
+      na pasta do usuário, então entre na pasta do projeto antes de tudo:
+
+```bash
+cd /c/Users/StartSe/workspace/fiap/cp2_devops
+ls    # deve listar: README.md  app  docs  scripts  tests
+```
 - [ ] Portal Azure aberto na lista de grupos de recursos
 - [ ] Abas do navegador preparadas (vazias por enquanto): aplicação, Query
       Editor, Application Insights
@@ -45,6 +51,7 @@ Rodar e explicar cada script. Pode pausar a gravação durante as esperas
 longas e retomar no resultado.
 
 ```bash
+cd /c/Users/StartSe/workspace/fiap/cp2_devops   # se ainda nao estiver na raiz
 ./scripts/01_resource-group.sh
 ./scripts/02_key-vault.sh        # "as senhas nascem aqui, ninguém as vê"
 ./scripts/03_sql-server.sh       # "banco PaaS, não container; firewall com meu IP"
@@ -136,4 +143,4 @@ Application Insights. **Não** rodar o `99_cleanup.sh` até a correção.
 | `02` falha: cofre excluído reversivelmente | cleanup antigo sem purge | `az keyvault purge --name kv-dimdim-web-rm561940` |
 | `07` não chega ao 200 | app ainda iniciando ou erro de banco | `az webapp log tail -g rg-dimdim-webapp-rm561940 -n rm561940-webapp-dimdim` |
 | Application Insights vazio | ingestão atrasada | esperar mais 2 minutos e atualizar |
-| `argument --resource-group: expected one argument` | terminal fora da raiz do repo | `cd` para a raiz e repetir |
+| `argument --resource-group: expected one argument` | terminal fora da raiz do repo | `cd /c/Users/StartSe/workspace/fiap/cp2_devops` e repetir |
