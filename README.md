@@ -9,7 +9,7 @@ persistência no **Azure SQL Database** (PaaS), segredos no **Azure Key Vault**
 e monitoramento pelo **Application Insights**. Todos os recursos são criados
 por scripts **Azure CLI** e o deploy é feito com **`az webapp deploy`**.
 
-**Vídeo da solução:** <LINK DO VÍDEO>
+**Vídeo da solução:** https://youtu.be/NkE8rhaaX2c
 
 ---
 
